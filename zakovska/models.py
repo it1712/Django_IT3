@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-
+from datetime import date
 
 # Validators!!
 
@@ -47,13 +47,24 @@ class Teacher(models.Model):
     teacher_surname = models.CharField(max_length=50, verbose_name="Teacher surname")
     teacher_pid = models.CharField(max_length=11, verbose_name="Teacher pid (rodne cislo)", unique=True,
                                    help_text="Format - XXXXXX/XXXX")
-    teacher_subjects = models.ManyToManyField(Subject, help_text="Select teacher's subjects")
+    # teacher_subjects = models.ManyToManyField(Subject, help_text="Select teacher's subjects")
 
     class Meta:
         ordering = ["teacher_short"]
 
     def __str__(self):
         return f"{self.teacher_name} {self.teacher_surname} ({self.teacher_short})"
+
+
+class TeacherSubject(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["teacher"]
+
+    def __str__(self):
+        return f"{self.subject} - {self.teacher}"
 
 
 class Class(models.Model):
@@ -90,8 +101,10 @@ class Student(models.Model):
 
 
 class Mark(models.Model):
+    # Vybrat jestli Teacher a Subject zvlášť / ne - teď obojí napůl
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    # teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(TeacherSubject, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     title = models.CharField(verbose_name="title", max_length=50)
     MARK_CHOICES = (
@@ -109,24 +122,25 @@ class Mark(models.Model):
                                help_text="Select mark")
 
     MARK_WEIGHTS = (
-        (0.1, "10%"),
-        (0.2, "20%"),
-        (0.3, "30%"),
-        (0.4, "40%"),
-        (0.5, "50%"),
-        (0.6, "60%"),
-        (0.7, "70%"),
-        (0.8, "80%"),
-        (0.9, "90%"),
-        (1.0, "100%")
+        (10, "10%"),
+        (20, "20%"),
+        (30, "30%"),
+        (40, "40%"),
+        (50, "50%"),
+        (60, "60%"),
+        (70, "70%"),
+        (80, "80%"),
+        (90, "90%"),
+        (100, "100%")
     )
-    # Decimal field -> nefunguje (platné hodnoty jenom 1.0 a 0.5, jinak nic)
-    mark_weight = models.FloatField(verbose_name="Mark weight", choices=MARK_WEIGHTS, help_text="Select mark weight")
-    date = models.DateField(auto_now=True, verbose_name="Date", help_text="YYYY-MM-DD")
+    # decimal field - nejde
+    # mark_weight = models.FloatField(verbose_name="Mark weight", choices=MARK_WEIGHTS, help_text="Select mark weight")
+    mark_weight = models.IntegerField(verbose_name="Mark weight", choices=MARK_WEIGHTS, help_text="Select mark weight")
+    date = models.DateField(verbose_name="Date", help_text="YYYY-MM-DD", default=date.today)
     comment = models.TextField(verbose_name="Comment", max_length=200, null=True, blank=True)
 
     class Meta:
         ordering = ["-date", "student"]
 
     def __str__(self):
-        return f"Student: {self.student}; {self.subject}, Teacher: {self.teacher}, Title: {self.title}, Mark: {self.mark}, Mark weight{self.mark_weight}"
+        return f"Student: {self.student}; {self.subject}, Teacher: {self.teacher}, Title: {self.title}, Mark: {self.mark}, Mark weight: {self.mark_weight}"

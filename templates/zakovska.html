@@ -1,0 +1,71 @@
+{% load static %}
+<html lang="cs">
+    <head>
+        <title>
+            Žákovská knížka online
+        </title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+{#        CSS NOT FOUND  #}
+        <link rel="stylesheet" href="{% static 'css/zakovska.css' %}">
+    </head>
+    <body class="bg-dark">
+        <header class="jumbotron text-center bg-dark">
+            <h1 class="text-white">Žákovská online</h1>
+        </header>
+        <main class="container bg-dark text-white">
+            <h2 class="text-center pb-4">Výpis všech známek</h2>
+            <div class="table-responsive">
+                <table class="table-dark table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Předmět</th>
+                            <th>Učitel</th>
+                            <th>Téma</th>
+                            <th>Student</th>
+                            <th>Známka</th>
+                            <th>Váha známky</th>
+                            <th>Datum</th>
+                            <th>Komentář</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for mark in marks %}
+                        <tr>
+                            <td>
+                                {{ mark.subject }}
+                            </td>
+                            <td>
+                                {{ mark.teacher }}
+                            </td>
+                            <td>
+                                {{ mark.title }}
+                            </td>
+                            <td>
+                                {{ mark.student }}
+                            </td>
+                            <td>
+                                {{ mark.mark }}
+                            </td>
+                            <td>
+                                {{ mark.mark_weight }}%
+                            </td>
+                            <td>
+                                {{ mark.date }}
+                            </td>
+                            <td>
+                                {{ mark.comment }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <footer>
+
+        </footer>
+
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    </body>
+</html>

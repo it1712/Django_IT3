@@ -1,0 +1,15 @@
+* :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6){
+    color: #b4b4b4;
+}
+
+td, th{
+    padding: 10px !important;
+}
+
+th, td, table{
+    border: 1px solid #636363 !important;
+}
+
+table{
+    margin: 0 auto;
+}
